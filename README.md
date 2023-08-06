@@ -72,7 +72,7 @@ rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
 ```
 rpm -Uvh https://dev.mysql.com/get/mysql80-community-release-el7-6.noarch.rpm
 ```
-- Установим компоненты **mysql-server и **mysql-client**:
+- Установим компоненты **mysql-server** и **mysql-client**:
 ```
 yum -y install mysql-server mysql-client
 ```
@@ -94,4 +94,29 @@ cat /var/log/mysqld.log
 ```
 cat /var/log/mysqld.log
 2023-08-06T18:44:23.889039Z 6 [Note] [MY-010454] [Server] A temporary password is generated for root@localhost: #1fQoislWsk6
+```
+- Предоставим необходимые права пользователю mysql:
+```
+chown -R mysql: /var/lib/mysql
+chown -R mysql: /var/log/mysql
+```
+- Приступаем к редактированию конфига:
+```
+nano /etc/my.cnf
+```
+- Вносим изменения в раздел **[mysqld]**:
+
+**mysql8-vm01:**
+```
+[mysqld]
+bind-address=0.0.0.0
+server-id=1
+log_bin=/var/log/mysql/mybin.log
+```
+**mysql8-vm02:**
+```
+[mysqld]
+bind-address=0.0.0.0
+server-id=2
+log_bin=/var/log/mysql/mybin.log
 ```
