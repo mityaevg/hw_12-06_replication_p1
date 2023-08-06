@@ -120,3 +120,17 @@ bind-address=0.0.0.0
 server-id=2
 log_bin=/var/log/mysql/mybin.log
 ```
+- Запускаем сервис **mysqld**:
+```
+systemctl start mysqld
+```
+- Запускаем консоль mysql на наших серверах:
+**mysql8-vm01:**
+```
+mysql -p
+Enter password: uqkWR,8GqPB5
+```
+**mysql8-vm02:**
+mysql -p
+Enter password: #1fQoislWsk6
+```
