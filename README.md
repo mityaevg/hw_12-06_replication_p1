@@ -131,6 +131,44 @@ mysql -p
 Enter password: uqkWR,8GqPB5
 ```
 **mysql8-vm02:**
+```
 mysql -p
 Enter password: #1fQoislWsk6
 ```
+- Прежде, чем настраивать репликацию, необходимо поменять пароль для **root** на обеих виртульных машинах:
+```
+ALTER USER 'root'@'localhost' IDENTIFIED BY '12345';
+FLUSH PRIVILEGES;
+```
+- Переходим непосредственно к настройке репликации:
+```
+CREATE USER 'replication'@'%' IDENTIFIED WITH mysql_native_password BY '12345';
+GRANT REPLICATION SLAVE ON *.* TO 'replication'@'%';
+```
+**mysql8-vm02 (slave):**
+```
+CHANGE MASTER TO MASTER_HOST='10.128.0.27', MASTER_USER='replication', MASTER_PASSWORD='12345', MASTER_LOG_FILE='mybin.000001', MASTER_LOG_POS = 1162;
+START SLAVE;
+SHOW SLAVE STATUS\G;
+```
+- Статус **mysql8-vm02 (slave):**
+
+<kbd>![](img/slave_db_status.png)</kbd>
+
+- Посмотрим список баз данных на **master (mysql8-vm01)** и **slave (mysql8-vm02)**:
+
+<kbd>![](img/databases_list_comparison.png)</kbd>
+
+- Создадим новую базу данных на **master** ноде для проверки работы репликации:
+```
+create database new_database;
+```
+
+<kbd>![](img/databases_list_comparison1.png)</kbd>
+
+- Удалим только что созданную базу **new_database** на **master** ноде и снова проверим список баз между ВМ:
+```
+drop database new_database;
+```
+<kbd>![](img/databases_list_comparison2.png)</kbd>
+
