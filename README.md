@@ -37,6 +37,8 @@
 
 Выполните конфигурацию master-slave репликации, примером можно пользоваться из лекции.
 
+*Приложите скриншоты конфигурации, выполнения работы: состояния и режимы работы серверов.*
+
 **Решение:**
 
 - Руководствуясь материалом из лекции, создадим 2 ВМ под управлением **CentOS 7** в **Yandex.Cloud**:
@@ -47,7 +49,49 @@ mysql8-vm02
 
 <kbd>![](img/yandex_cloud_console_vms.png)</kbd>
 
+- Подключимся по SSH к виртуальным машинам:
 
+<kbd>![](img/ssh_consoles_vm1.png)</kbd>
 
+<kbd>![](img/ssh_consoles_vm2.png)</kbd>
 
-*Приложите скриншоты конфигурации, выполнения работы: состояния и режимы работы серверов.*
+- Переключимся на **root**:
+```
+[mityaevg@mysql8-vm01 ~]$ sudo su -
+[root@mysql8-vm01 ~]#
+```
+```
+[mityaevg@mysql8-vm02 ~]$ sudo su -
+[root@mysql8-vm02 ~]#
+```
+- Добавим **gpg-ключ** в систему:
+```
+rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
+```
+- Добавим репозиторий msql 8.0:
+```
+rpm -Uvh https://dev.mysql.com/get/mysql80-community-release-el7-6.noarch.rpm
+```
+- Установим компоненты **mysql-server и **mysql-client**:
+```
+yum -y install mysql-server mysql-client
+```
+- Создадим журнал для записи логов базы данных:
+```
+mkdir -p /var/log/mysql
+```
+- Инициализируем наши серверы:
+```
+mysqld --initialize
+```
+- Проверим журнал **mysqld.log**:
+**mysql8-vm01:**
+```
+cat /var/log/mysqld.log
+2023-08-06T18:44:18.025405Z 6 [Note] [MY-010454] [Server] A temporary password is generated for root@localhost: uqkWR,8GqPB5
+```
+**mysql8-vm02:**
+```
+cat /var/log/mysqld.log
+2023-08-06T18:44:23.889039Z 6 [Note] [MY-010454] [Server] A temporary password is generated for root@localhost: #1fQoislWsk6
+```
